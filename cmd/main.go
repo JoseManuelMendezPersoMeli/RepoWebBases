@@ -2,23 +2,28 @@ package main
 
 import (
 	"GoWeb/internal"
-	"github.com/gorilla/mux"
+	"GoWeb/internal/handlers"
+	"github.com/go-chi/chi/v5"
 	"net/http"
 )
 
 func main() {
+
+	// Dependency injection
 	file, err := internal.LoadFile()
 	if err != nil {
 		println("Error loading file: ", err.Error())
 		return
 	}
 
-	r := mux.NewRouter()
-	r.HandleFunc("/ping", internal.PingHandler)
-	r.HandleFunc("/products", internal.ProductsHandler(file))
-	r.HandleFunc("/products/{id:[0-9]+}", internal.ProductsByIDHandler(file))
+	// Create a new router
+	router := chi.NewRouter()
+	router.Get("/ping", handlers.PingHandler)
+	router.Get("/products", handlers.ProductsHandler(file))
+	router.Get("/products/{id:[0-9]+}", handlers.ProductsByIDHandler(file))
+	router.Get("/products/search", handlers.SearchHandler(file))
 
-	http.Handle("/", r)
+	http.Handle("/", router)
 
 	println("Server started on port 8080")
 	err = http.ListenAndServe(":8080", nil)

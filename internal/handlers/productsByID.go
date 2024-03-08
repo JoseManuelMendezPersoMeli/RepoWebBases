@@ -8,14 +8,14 @@ import (
 	"strings"
 )
 
-func ProductsByIDHandler(products []internal.Product) http.HandlerFunc {
+func ProductsByIDHandler(products *internal.ProductManager) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		path := strings.TrimPrefix(r.URL.Path, "/products/")
 		id := strings.Trim(path, "/")
 
 		IDInt, _ := strconv.Atoi(id)
 		var foundProduct *internal.Product
-		for _, product := range products {
+		for _, product := range products.Products {
 			if product.ID == IDInt {
 				foundProduct = &product
 				break

@@ -7,13 +7,13 @@ import (
 	"strconv"
 )
 
-func SearchHandler(products []internal.Product) http.HandlerFunc {
+func SearchHandler(products *internal.ProductManager) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		priceGt := r.URL.Query().Get("priceGt")
 		if priceGt != "" {
 			priceGtInt, _ := strconv.Atoi(priceGt)
 			var foundProducts []internal.Product
-			for _, product := range products {
+			for _, product := range products.Products {
 				if product.Price > float64(priceGtInt) {
 					foundProducts = append(foundProducts, product)
 				}
